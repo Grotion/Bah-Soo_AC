@@ -14,188 +14,194 @@ struct HomePage: View {
     @State private var inputAlert:Bool = false
     var body: some View {
         GeometryReader { geometry in
-            VStack(alignment: .center, spacing: 10) {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        currentPage = Page.InstructionPage
-                    }) {
-                        Image(systemName: "info.circle")
-                            .font(.system(size: 30))
-                            .foregroundColor(Color(red: 147/255, green: 112/255, blue: 219/255))
-                            .frame(width: geometry.size.width*0.1, height: geometry.size.width*0.1)
-                            .scaledToFit()
-                    }
-                    .padding(5)
-                }
-                Spacer()
-                Group {
-                    Text("Bah-Soo")
-                        .foregroundColor(Color(red: 0/255, green: 88/255, blue: 161/255))
-                        .font(.custom("AvenirNextCondensed-Bold", size: 36))
-                        .lineLimit(1)
-                        .frame(width: geometry.size.width*0.8)
-                        .minimumScaleFactor(0.01)
-                    Text("Attendance Calculator")
-                        .foregroundColor(Color(red: 189/255, green: 0/255, blue: 44/255))
-                        .font(.system(.largeTitle))
-                        .fontWeight(.heavy)
-                        .lineLimit(1)
-                        .frame(width: geometry.size.width*0.8)
-                        .minimumScaleFactor(0.01)
-                }
-                Spacer()
-                Group {
-                    TimeSelectorRow(geometry: geometry,
-                                    timeTitle: "Clock In",
-                                    selectAction: { attendanceData.selectClockIn() },
-                                    displayTime: attendanceData.attendance.clockIn,
-                                    formatter: attendanceData.formatter,
-                                    showConfirmation: $attendanceData.punchClockInConfrimation,
-                                    confirmationDisplay: { attendanceData.punchClockInConfrimation = true },
-                                    confirmationTest: "Are you sure to punch current time ?",
-                                    confirmationYesAction: { attendanceData.punchClockIn() },
-                                    confirmationNoAction: {attendanceData.punchClockInConfrimation = false},
-                                    selectionDisabled: false
-                    )
-                    Toggle(isOn: $attendanceData.attendance.isKanda) {
-                        Label("Go to Kanda?", systemImage: "figure.walk")
-                            .lineLimit(1)
-                            .foregroundColor(Color(red: 0/255, green: 88/255, blue: 161/255))
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                    }
-                    .padding()
-                    .tint(Color(red: 189/255, green: 0/255, blue: 44/255))
-                    .controlSize(.large)
-                    .toggleStyle(.automatic)
-                    .frame(maxWidth: geometry.size.width * 0.8)
-                    TimeSelectorRow(geometry: geometry,
-                                    timeTitle: "Kanda In",
-                                    selectAction: { attendanceData.selectKandaIn() },
-                                    displayTime: attendanceData.attendance.kandaIn,
-                                    formatter: attendanceData.formatter,
-                                    showConfirmation: $attendanceData.punchKandaInConfrimation,
-                                    confirmationDisplay: { attendanceData.punchKandaInConfrimation = true },
-                                    confirmationTest: "Are you sure to punch current time ?",
-                                    confirmationYesAction: { attendanceData.punchKandaIn() },
-                                    confirmationNoAction: { attendanceData.punchKandaInConfrimation = false },
-                                    selectionDisabled: !attendanceData.attendance.isKanda
-                    )
-                    TimeSelectorRow(geometry: geometry,
-                                    timeTitle: "Kanda Out",
-                                    selectAction: { attendanceData.selectKandaOut() },
-                                    displayTime: attendanceData.attendance.kandaOut,
-                                    formatter: attendanceData.formatter,
-                                    showConfirmation: $attendanceData.punchKandaOutConfrimation,
-                                    confirmationDisplay: { attendanceData.punchKandaOutConfrimation = true },
-                                    confirmationTest: "Are you sure to punch current time ?",
-                                    confirmationYesAction: { attendanceData.punchKandaOut() },
-                                    confirmationNoAction: { attendanceData.punchKandaOutConfrimation = false },
-                                    selectionDisabled: !attendanceData.attendance.isKanda
-                    )
-                }
-                Spacer()
-                Button(action: {
-                    if(attendanceData.checkTimeValid()) {
-                        attendanceData.calculate()
-                        currentPage = Page.ResultPage
-                    }
-                }) {
-                    Text("Calculate")
-                        .padding()
-                        .foregroundColor(Color(red: 0/255, green: 250/255, blue: 154/255))
-                        .font(.system(size: 20, weight: .heavy, design: .rounded))
-                        .background(Rectangle().cornerRadius(10).foregroundColor(.blue))
-                        .minimumScaleFactor(0.01)
-                }
-                Spacer()
-            }
-            .alert("Alert", isPresented: $attendanceData.isInputAlert, actions: {
-                Button("Check my time again") { }
-            }, message: {
-                Text(attendanceData.alertMsg)
-            })
-            .sheet(isPresented: $attendanceData.timeSelector.showSelectorSheet) {
-                VStack(alignment: .center, spacing: 20) {
+            ZStack {
+                VStack(alignment: .center, spacing: 10) {
                     HStack {
+                        Spacer()
                         Button(action: {
-                            attendanceData.timeSelector.showSelectorSheet = false
-                        }){
-                            Label("Back", systemImage: "chevron.backward")
-                            .foregroundColor(Color.blue)
-                            .font(.system(size: 20, weight: .light, design: .rounded))
+                            currentPage = Page.InstructionPage
+                        }) {
+                            Image(systemName: "info.circle")
+                                .font(.system(size: 30))
+                                .foregroundColor(Color(red: 147/255, green: 112/255, blue: 219/255))
+                                .frame(width: geometry.size.width*0.1, height: geometry.size.width*0.1)
+                                .scaledToFit()
                         }
                         .padding(5)
-                        Spacer()
                     }
                     Spacer()
-                    Text(attendanceData.timeSelector.description)
-                        .multilineTextAlignment(.leading)
-                        .foregroundColor(Color.black)
-                        .font(.system(size: 14, weight: .light, design: .rounded))
-                        .minimumScaleFactor(0.01)
-                    DatePicker("",
-                               selection: $attendanceData.timeSelector.selectDate,
-                               in: attendanceData.timeSelector.range,
-                               displayedComponents: [.date, .hourAndMinute])
-                        .labelsHidden()
-                        .datePickerStyle(.wheel)
-                    Spacer()
-                    HStack(alignment: .center, spacing: 10){
-                        Button(action: {
-                            attendanceData.timeSelector.getTime()
-                        }){
-                            Text("Now")
-                                .padding(5)
-                                .foregroundColor(Color.white)
-                                .font(.system(size: 20, weight: .light, design: .rounded))
-                                .frame(width: geometry.size.width*0.3)
-                                .background(Rectangle().cornerRadius(10).foregroundColor(.black))
-                                .minimumScaleFactor(0.01)
-                        }
-                        Button(action: {
-                            attendanceData.timeSelector.reset()
-                        }){
-                            Text("Reset")
-                                .padding(5)
-                                .foregroundColor(Color.white)
-                                .font(.system(size: 20, weight: .light, design: .rounded))
-                                .minimumScaleFactor(0.01)
-                                .frame(width: geometry.size.width*0.3)
-                                .background(Rectangle().cornerRadius(10).foregroundColor(.red))
-                        }
-                    }
-                    Button(action: {
-                        attendanceData.timeSelector.saveConfirmation = true
-                        // attendanceData.timeSelector.save()
-                    }){
-                        Text("Save")
-                            .padding(5)
-                            .foregroundColor(Color.green)
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                    Group {
+                        Text("Bah-Soo")
+                            .foregroundColor(Color(red: 0/255, green: 88/255, blue: 161/255))
+                            .font(.custom("AvenirNextCondensed-Bold", size: 36))
+                            .lineLimit(1)
+                            .frame(width: geometry.size.width*0.8)
                             .minimumScaleFactor(0.01)
-                            .frame(width: geometry.size.width*0.6)
-                            .background(Rectangle().cornerRadius(10).foregroundColor(.white))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.green, lineWidth: 2)
-                            )
-                            .confirmationDialog("Are you sure to save selected time ?",
-                                                isPresented: $attendanceData.timeSelector.saveConfirmation,
-                                                titleVisibility: .visible) {
-                                Button("No", role: .destructive) {}
-                                Button("Yes", role: .cancel) {
-                                    attendanceData.timeSelector.save()
-                                    DispatchQueue.main.async {
-                                        attendanceData.timeSelector.showSelectorSheet = false
-                                    }
-                                }
-                            }
+                        Text("Attendance Calculator")
+                            .foregroundColor(Color(red: 189/255, green: 0/255, blue: 44/255))
+                            .font(.system(.largeTitle))
+                            .fontWeight(.heavy)
+                            .lineLimit(1)
+                            .frame(width: geometry.size.width*0.8)
+                            .minimumScaleFactor(0.01)
                     }
-                    
+                    Spacer()
+                    Group {
+                        TimeSelectorRow(geometry: geometry,
+                                        timeTitle: "Clock In",
+                                        selectAction: { attendanceData.selectClockIn() },
+                                        displayTime: attendanceData.attendance.clockIn,
+                                        formatter: attendanceData.formatter,
+                                        showConfirmation: $attendanceData.punchClockInConfrimation,
+                                        confirmationDisplay: { attendanceData.punchClockInConfrimation = true },
+                                        confirmationTest: "Are you sure to punch current time ?",
+                                        confirmationYesAction: { attendanceData.punchClockIn() },
+                                        confirmationNoAction: {attendanceData.punchClockInConfrimation = false},
+                                        selectionDisabled: false
+                        )
+                        Toggle(isOn: $attendanceData.attendance.isKanda) {
+                            Label("Go to Kanda?", systemImage: "figure.walk")
+                                .lineLimit(1)
+                                .foregroundColor(Color(red: 0/255, green: 88/255, blue: 161/255))
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                        }
+                        .padding()
+                        .tint(Color(red: 189/255, green: 0/255, blue: 44/255))
+                        .controlSize(.large)
+                        .toggleStyle(.automatic)
+                        .frame(maxWidth: geometry.size.width * 0.8)
+                        TimeSelectorRow(geometry: geometry,
+                                        timeTitle: "Kanda In",
+                                        selectAction: { attendanceData.selectKandaIn() },
+                                        displayTime: attendanceData.attendance.kandaIn,
+                                        formatter: attendanceData.formatter,
+                                        showConfirmation: $attendanceData.punchKandaInConfrimation,
+                                        confirmationDisplay: { attendanceData.punchKandaInConfrimation = true },
+                                        confirmationTest: "Are you sure to punch current time ?",
+                                        confirmationYesAction: { attendanceData.punchKandaIn() },
+                                        confirmationNoAction: { attendanceData.punchKandaInConfrimation = false },
+                                        selectionDisabled: !attendanceData.attendance.isKanda
+                        )
+                        TimeSelectorRow(geometry: geometry,
+                                        timeTitle: "Kanda Out",
+                                        selectAction: { attendanceData.selectKandaOut() },
+                                        displayTime: attendanceData.attendance.kandaOut,
+                                        formatter: attendanceData.formatter,
+                                        showConfirmation: $attendanceData.punchKandaOutConfrimation,
+                                        confirmationDisplay: { attendanceData.punchKandaOutConfrimation = true },
+                                        confirmationTest: "Are you sure to punch current time ?",
+                                        confirmationYesAction: { attendanceData.punchKandaOut() },
+                                        confirmationNoAction: { attendanceData.punchKandaOutConfrimation = false },
+                                        selectionDisabled: !attendanceData.attendance.isKanda
+                        )
+                    }
+                    Spacer()
+                    Button(action: {
+                        if(attendanceData.checkTimeValid()) {
+                            attendanceData.calculate()
+                            currentPage = Page.ResultPage
+                        }
+                    }) {
+                        Text("Calculate")
+                            .padding()
+                            .foregroundColor(Color(red: 0/255, green: 250/255, blue: 154/255))
+                            .font(.system(size: 20, weight: .heavy, design: .rounded))
+                            .background(Rectangle().cornerRadius(10).foregroundColor(.blue))
+                            .minimumScaleFactor(0.01)
+                    }
                     Spacer()
                 }
-                .padding(10)
+                .alert("Alert", isPresented: $attendanceData.isInputAlert, actions: {
+                    Button("Check my time again") { }
+                }, message: {
+                    Text(attendanceData.alertMsg)
+                })
+                .sheet(isPresented: $attendanceData.timeSelector.showSelectorSheet) {
+                    VStack(alignment: .center, spacing: 20) {
+                        HStack {
+                            Button(action: {
+                                attendanceData.timeSelector.showSelectorSheet = false
+                            }){
+                                Label("Back", systemImage: "chevron.backward")
+                                .foregroundColor(Color.blue)
+                                .font(.system(size: 20, weight: .light, design: .rounded))
+                            }
+                            .padding(5)
+                            Spacer()
+                        }
+                        Spacer()
+                        Text(attendanceData.timeSelector.description)
+                            .multilineTextAlignment(.leading)
+                            .foregroundColor(Color.black)
+                            .font(.system(size: 14, weight: .light, design: .rounded))
+                            .minimumScaleFactor(0.01)
+                        DatePicker("",
+                                   selection: $attendanceData.timeSelector.selectDate,
+                                   in: attendanceData.timeSelector.range,
+                                   displayedComponents: [.date, .hourAndMinute])
+                            .labelsHidden()
+                            .datePickerStyle(.wheel)
+                        Spacer()
+                        HStack(alignment: .center, spacing: 10){
+                            Button(action: {
+                                attendanceData.timeSelector.getTime()
+                            }){
+                                Text("Now")
+                                    .padding(5)
+                                    .foregroundColor(Color.white)
+                                    .font(.system(size: 20, weight: .light, design: .rounded))
+                                    .frame(width: geometry.size.width*0.3)
+                                    .background(Rectangle().cornerRadius(10).foregroundColor(.black))
+                                    .minimumScaleFactor(0.01)
+                            }
+                            Button(action: {
+                                attendanceData.timeSelector.reset()
+                            }){
+                                Text("Reset")
+                                    .padding(5)
+                                    .foregroundColor(Color.white)
+                                    .font(.system(size: 20, weight: .light, design: .rounded))
+                                    .minimumScaleFactor(0.01)
+                                    .frame(width: geometry.size.width*0.3)
+                                    .background(Rectangle().cornerRadius(10).foregroundColor(.red))
+                            }
+                        }
+                        Button(action: {
+                            attendanceData.timeSelector.saveConfirmation = true
+                            // attendanceData.timeSelector.save()
+                        }){
+                            Text("Save")
+                                .padding(5)
+                                .foregroundColor(Color.green)
+                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .minimumScaleFactor(0.01)
+                                .frame(width: geometry.size.width*0.6)
+                                .background(Rectangle().cornerRadius(10).foregroundColor(.white))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.green, lineWidth: 2)
+                                )
+                                .confirmationDialog("Are you sure to save selected time ?",
+                                                    isPresented: $attendanceData.timeSelector.saveConfirmation,
+                                                    titleVisibility: .visible) {
+                                    Button("No", role: .cancel) {}
+                                    Button("Yes") {
+                                        attendanceData.timeSelector.save()
+                                        DispatchQueue.main.async {
+                                            attendanceData.timeSelector.showSelectorSheet = false
+                                        }
+                                    }
+                                }
+                        }
+                        Spacer()
+                    }
+                    .padding(10)
+                }
+                VStack {
+                    Spacer()
+                    GrotionCopyright()
+                        .padding(5)
+                }
             }
         }
     }
@@ -260,10 +266,10 @@ struct TimeSelectorRow: View {
             .confirmationDialog("Are you sure to punch current time ?",
                                 isPresented: $showConfirmation,
                                 titleVisibility: .visible) {
-                Button("No", role: .destructive) {
+                Button("No", role: .cancel) {
                     confirmationNoAction()
                 }
-                Button("Yes", role: .cancel) {
+                Button("Yes") {
                     confirmationYesAction()
                 }
                 
@@ -272,3 +278,12 @@ struct TimeSelectorRow: View {
     }
 }
 
+struct GrotionCopyright: View {
+    var body: some View {
+        VStack{
+            Spacer()
+            Text("© 2022 Grotion")
+            .foregroundColor(.black)
+        }
+    }
+}

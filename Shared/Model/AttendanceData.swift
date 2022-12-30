@@ -82,14 +82,15 @@ class AttendanceData: ObservableObject {
     }
  
     func checkTimeValid() -> Bool{
-        
-        if (Calendar.current.dateComponents(in: TimeZone.current, from: attendance.clockIn).hour!<7 ||
+        /*
+         if (Calendar.current.dateComponents(in: TimeZone.current, from: attendance.clockIn).hour!<7 ||
             Calendar.current.dateComponents(in: TimeZone.current, from: attendance.clockIn).hour!>9) {
             alertMsg = "Clock in time must be between 7AM and 9AM"
             isInputAlert = true
             return false
         }
-        else if (attendance.isKanda && attendance.clockIn>attendance.kandaIn){
+         */
+        if (attendance.isKanda && attendance.clockIn>attendance.kandaIn){
             alertMsg = "Kanda in time must greater than clock in time"
             isInputAlert = true
             return false
@@ -111,14 +112,15 @@ class AttendanceData: ObservableObject {
     }
     
     func selectClockIn() {
+        let minDate = Date(timeIntervalSinceReferenceDate: 0)
         timeSelector.showSelectorSheet = true
         timeSelector.type = TimeSelectorType.ClockIn
         timeSelector.description = "Your selecting clock in time"
         timeSelector.selectDate = attendance.clockIn
-        timeSelector.range = Date(timeIntervalSinceNow: -86400*7)...Date()
+        timeSelector.range = minDate...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.clockIn }
-        timeSelector.save = { self.attendance.clockIn = self.timeSelector.selectDate }
+        timeSelector.save = { self.attendance.clockIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
     }
  
     func punchClockIn() {
@@ -128,6 +130,7 @@ class AttendanceData: ObservableObject {
     }
     
     func selectKandaIn() {
+        let minDate = attendance.clockIn
         timeSelector.showSelectorSheet = true
         timeSelector.type = TimeSelectorType.KandaIn
         timeSelector.description = "Your selecting Kanda in time"
@@ -135,7 +138,7 @@ class AttendanceData: ObservableObject {
         timeSelector.range = attendance.clockIn...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.kandaIn }
-        timeSelector.save = { self.attendance.kandaIn = self.timeSelector.selectDate }
+        timeSelector.save = { self.attendance.kandaIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
     }
  
     func punchKandaIn() {
@@ -144,6 +147,7 @@ class AttendanceData: ObservableObject {
     }
     
     func selectKandaOut() {
+        let minDate = attendance.kandaIn
         timeSelector.showSelectorSheet = true
         timeSelector.type = TimeSelectorType.KandaOut
         timeSelector.description = "Your selecting Kanda out time"
@@ -151,7 +155,7 @@ class AttendanceData: ObservableObject {
         timeSelector.range = attendance.kandaIn...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.kandaOut }
-        timeSelector.save = { self.attendance.kandaOut = self.timeSelector.selectDate }
+        timeSelector.save = { self.attendance.kandaOut = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
         
     }
  

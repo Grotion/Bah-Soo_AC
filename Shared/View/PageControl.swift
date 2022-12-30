@@ -18,7 +18,6 @@ struct PageControl: View {
         GeometryReader { geometry in
             ZStack
             {
-                GrotionCopyright()
                 switch currentPage
                 {
                     case Page.HomePage: HomePage(currentPage: $currentPage, attendanceData: attendanceData)
@@ -36,16 +35,6 @@ struct PageControl: View {
 struct PageControl_Previews: PreviewProvider {
     static var previews: some View {
         PageControl()
-    }
-}
-
-struct GrotionCopyright: View {
-    var body: some View {
-        VStack{
-            Spacer()
-            Text("© 2022 Grotion")
-            .foregroundColor(.black)
-        }
     }
 }
 
