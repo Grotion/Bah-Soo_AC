@@ -73,6 +73,7 @@ class AttendanceData: ObservableObject {
     
     func initTimeValue() {
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        ignoreSecond()
         clockOut = attendance.clockIn+32400
         overtimeStart = clockOut+1800
         overtime.removeAll()
@@ -90,13 +91,13 @@ class AttendanceData: ObservableObject {
             return false
         }
          */
-        if (attendance.isKanda && attendance.clockIn>attendance.kandaIn){
+        if (attendance.isKanda && attendance.clockIn>=attendance.kandaIn){
             alertMsg = "Kanda in time must greater than clock in time"
             isInputAlert = true
             return false
         }
         else if (attendance.isKanda && attendance.kandaIn>attendance.kandaOut){
-            alertMsg = "Kanda out time must greater than kanda in time"
+            alertMsg = "Kanda out time must greater or equal than kanda in time"
             isInputAlert = true
             return false
         }
@@ -120,13 +121,17 @@ class AttendanceData: ObservableObject {
         timeSelector.range = minDate...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.clockIn }
-        timeSelector.save = { self.attendance.clockIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
+        timeSelector.save = {
+            self.attendance.clockIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate
+            self.ignoreSecond()
+        }
     }
  
     func punchClockIn() {
         attendance.clockIn = Date()
         // attendance.kandaIn = attendance.clockIn
         // attendance.kandaOut = attendance.kandaIn
+        self.ignoreSecond()
     }
     
     func selectKandaIn() {
@@ -138,12 +143,16 @@ class AttendanceData: ObservableObject {
         timeSelector.range = attendance.clockIn...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.kandaIn }
-        timeSelector.save = { self.attendance.kandaIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
+        timeSelector.save = {
+            self.attendance.kandaIn = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate
+            self.ignoreSecond()
+        }
     }
  
     func punchKandaIn() {
         attendance.kandaIn = Date()
         // attendance.kandaOut = attendance.kandaIn
+        self.ignoreSecond()
     }
     
     func selectKandaOut() {
@@ -155,20 +164,19 @@ class AttendanceData: ObservableObject {
         timeSelector.range = attendance.kandaIn...Date()
         timeSelector.getTime = { self.timeSelector.selectDate = Date() }
         timeSelector.reset = { self.timeSelector.selectDate = self.attendance.kandaOut }
-        timeSelector.save = { self.attendance.kandaOut = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate }
+        timeSelector.save = {
+            self.attendance.kandaOut = minDate>self.timeSelector.selectDate ? minDate : self.timeSelector.selectDate
+            self.ignoreSecond()
+        }
         
     }
  
     func punchKandaOut() {
         attendance.kandaOut = Date()
+        self.ignoreSecond()
     }
     
-    func calculate() {
-        
-        overtime.removeAll()
-        clockOut = attendance.clockIn+32400
-        overtimeStart = clockOut+1800
-
+    func ignoreSecond() {
         var clockInComponent = Calendar.current.dateComponents(in: TimeZone.current, from: attendance.clockIn)
         clockInComponent.second = 0
         attendance.clockIn = Calendar.current.date(from: clockInComponent) ?? Date()
@@ -180,7 +188,13 @@ class AttendanceData: ObservableObject {
         var kandaOutComponent = Calendar.current.dateComponents(in: TimeZone.current, from: attendance.kandaOut)
         kandaOutComponent.second = 0
         attendance.kandaOut = Calendar.current.date(from: kandaOutComponent) ?? Date()
-
+    }
+    
+    func calculate() {
+        overtime.removeAll()
+        clockOut = attendance.clockIn+32400
+        overtimeStart = clockOut+1800
+        ignoreSecond()
         timeInKanda = Calendar.current.dateComponents([.hour, .minute], from: attendance.kandaIn, to: attendance.kandaOut)
 
         if attendance.isKanda {

@@ -111,7 +111,7 @@ struct HomePage: View {
                     }
                     Spacer()
                 }
-                .alert("Alert", isPresented: $attendanceData.isInputAlert, actions: {
+                .alert("Warning", isPresented: $attendanceData.isInputAlert, actions: {
                     Button("Check my time again") { }
                 }, message: {
                     Text(attendanceData.alertMsg)
