@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3971DB5B2965D6590083ABCD /* SubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3971DB5A2965D6590083ABCD /* SubViews.swift */; };
 		399BFA91293653F6007F6CD1 /* Bah_Soo_ACApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 399BFA81293653F1007F6CD1 /* Bah_Soo_ACApp.swift */; };
 		399BFA95293653F6007F6CD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399BFA83293653F5007F6CD1 /* Assets.xcassets */; };
 		399BFA96293653F6007F6CD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 399BFA83293653F5007F6CD1 /* Assets.xcassets */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3971DB5A2965D6590083ABCD /* SubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubViews.swift; sourceTree = "<group>"; };
 		399BFA81293653F1007F6CD1 /* Bah_Soo_ACApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bah_Soo_ACApp.swift; sourceTree = "<group>"; };
 		399BFA83293653F5007F6CD1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		399BFA88293653F5007F6CD1 /* Bah-Soo AC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bah-Soo AC.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -28,6 +30,7 @@
 		399BFAA5293654EA007F6CD1 /* HomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePage.swift; sourceTree = "<group>"; };
 		399BFAA729365502007F6CD1 /* InstructionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionPage.swift; sourceTree = "<group>"; };
 		399BFAA929365517007F6CD1 /* ResultPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultPage.swift; sourceTree = "<group>"; };
+		399E7C1029631B3600FDB144 /* Bah-Soo-AC--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Bah-Soo-AC--iOS--Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +54,7 @@
 		399BFA7B293653F1007F6CD1 = {
 			isa = PBXGroup;
 			children = (
+				399E7C1029631B3600FDB144 /* Bah-Soo-AC--iOS--Info.plist */,
 				399BFA80293653F1007F6CD1 /* Shared */,
 				399BFA8F293653F6007F6CD1 /* macOS */,
 				399BFA89293653F5007F6CD1 /* Products */,
@@ -92,6 +96,7 @@
 				399BFAA5293654EA007F6CD1 /* HomePage.swift */,
 				399BFAA729365502007F6CD1 /* InstructionPage.swift */,
 				399BFAA929365517007F6CD1 /* ResultPage.swift */,
+				3971DB5A2965D6590083ABCD /* SubViews.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -208,6 +213,7 @@
 				399BFAA4293654C5007F6CD1 /* PageControl.swift in Sources */,
 				399BFAA6293654EA007F6CD1 /* HomePage.swift in Sources */,
 				399BFAA829365502007F6CD1 /* InstructionPage.swift in Sources */,
+				3971DB5B2965D6590083ABCD /* SubViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,9 +343,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = M22WP7B2WF;
+				DEVELOPMENT_TEAM = J9ZF4JANQ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Bah-Soo-AC--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -350,8 +357,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "grotion.Bah-Soo-AC";
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "grotion.Bah-Soo-AC.boronglin";
 				PRODUCT_NAME = "Bah-Soo AC";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -367,9 +374,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = M22WP7B2WF;
+				DEVELOPMENT_TEAM = J9ZF4JANQ4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Bah-Soo-AC--iOS--Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -380,8 +388,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "grotion.Bah-Soo-AC";
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = "grotion.Bah-Soo-AC.boronglin";
 				PRODUCT_NAME = "Bah-Soo AC";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;

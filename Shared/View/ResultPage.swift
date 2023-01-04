@@ -31,7 +31,7 @@ struct ResultPage: View {
                     VStack(spacing: 10) {
                         TimeRow(showedTest: "Clock In:", date: attendanceData.attendance.clockIn, formatter: attendanceData.formatter)
                         TimeRow(showedTest: "Clock Out:", date: attendanceData.clockOut, formatter: attendanceData.formatter)
-                        Divider()
+                        CustomizeDivider()
                         if(attendanceData.attendance.isKanda) {
                             TimeRow(showedTest: "Kanda In:", date: attendanceData.attendance.kandaIn, formatter: attendanceData.formatter)
                             TimeRow(showedTest: "Kanda Out:", date: attendanceData.attendance.kandaOut, formatter: attendanceData.formatter)
@@ -46,7 +46,7 @@ struct ResultPage: View {
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.01)
                             }
-                            Divider()
+                            CustomizeDivider()
                         }
                         TimeRow(showedTest: "Overtime Starts:", date: attendanceData.overtimeStart, formatter: attendanceData.formatter)
                         ForEach(attendanceData.overtime.indices, id: \.self) {

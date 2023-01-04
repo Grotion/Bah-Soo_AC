@@ -62,7 +62,7 @@ struct HomePage: View {
                         Toggle(isOn: $attendanceData.attendance.isKanda) {
                             Label("Go to Kanda?", systemImage: "figure.walk")
                                 .lineLimit(1)
-                                .foregroundColor(Color(red: 0/255, green: 88/255, blue: 161/255))
+                                .foregroundColor(Color("Color_GoToKanda"))
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
                         }
                         .padding()
@@ -148,10 +148,10 @@ struct HomePage: View {
                             }){
                                 Text("Now")
                                     .padding(5)
-                                    .foregroundColor(Color.white)
+                                    .foregroundColor(Color("Color_NowBtnFg"))
                                     .font(.system(size: 20, weight: .light, design: .rounded))
                                     .frame(width: geometry.size.width*0.3)
-                                    .background(Rectangle().cornerRadius(10).foregroundColor(.black))
+                                    .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_NowBtnBg")))
                                     .minimumScaleFactor(0.01)
                             }
                             Button(action: {
@@ -231,7 +231,6 @@ struct TimeSelectorRow: View {
         HStack(alignment: .center, spacing: 5) {
             Text(timeTitle)
                 .lineLimit(1)
-                .foregroundColor(Color(red: 0/255, green: 0/255, blue: 0/255))
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .frame(maxWidth: geometry.size.width * 0.25)
                 .minimumScaleFactor(0.01)
@@ -274,16 +273,6 @@ struct TimeSelectorRow: View {
                 }
                 
             }
-        }
-    }
-}
-
-struct GrotionCopyright: View {
-    var body: some View {
-        VStack{
-            Spacer()
-            Text("© 2022 Grotion")
-            .foregroundColor(.black)
         }
     }
 }

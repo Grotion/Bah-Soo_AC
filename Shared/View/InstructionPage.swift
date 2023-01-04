@@ -31,13 +31,13 @@ struct InstructionPage: View {
                         Group {
                             Group {
                                 Text("Bah-Soo Attendance Calculator is a tool for calculating clock out time from given clock in time.")
-                                Divider()
+                                CustomizeDivider()
                                 Text("Feature")
                                     .bold()
                                     .underline()
                                 Text("If the user has a lot of work to do, the result will also show overtime from 1 hour up to 8 hours. This will help the user to know exactly when to get off work and rest.")
                                 Text("Exercise is a worthwhile habit to maintain. This tool allows the user to indicate whether he or she enters Kanda after work, then calculates attendance and overtime apart from the time spent in Kanda. The original attendance record system doesn't show the time that the user enters and leaves Kanda immediately, it is beneficial to record the time the user enters and leaves Kanda.")
-                                Divider()
+                                CustomizeDivider()
                             }
                             Group {
                                 Text("Timestamps")
@@ -46,7 +46,7 @@ struct InstructionPage: View {
                                 Text("Clock In - The time starts to work")
                                 Text("Kanda In - The time enters Kanda")
                                 Text("Kanda Out - The time leaves Kanda")
-                                Divider()
+                                CustomizeDivider()
                             }
                             Group {
                                 Text("Usage")
@@ -57,7 +57,7 @@ struct InstructionPage: View {
                                 Text("Step 3 - Select or punch Kanda in time if you went to Kanda")
                                 Text("Step 4 - Select or punch Kanda out time if you went to Kanda")
                                 Text("Step 5 - Press \"Calculate\" to view attendance result")
-                                Divider()
+                                CustomizeDivider()
                             }
                             Group {
                                 Text("Reminder & Restriction")
@@ -80,12 +80,12 @@ struct InstructionPage: View {
                                 + Text(" one pair ")
                                     .bold()
                                 + Text("of Kanda in and out time only, so if you enter and leave Kanda multiple times in a day, please add the time up manually.")
-                                Divider()
+                                CustomizeDivider()
                             }
                             Group {
                                 Text("As the old saying goes, time is money. By using this app to record attendance, you can take maximum advantage of each second!!")
                                     .italic()
-                                Divider()
+                                CustomizeDivider()
                             }
                             Group {
                                 Text("Developer")
@@ -121,4 +121,3 @@ struct InstructionPage_Previews: PreviewProvider {
         InstructionPage(currentPage: .constant(Page.InstructionPage))
     }
 }
-
