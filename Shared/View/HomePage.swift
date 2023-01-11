@@ -132,15 +132,14 @@ struct HomePage: View {
                         Spacer()
                         Text(attendanceData.timeSelector.description)
                             .multilineTextAlignment(.leading)
-                            .foregroundColor(Color.black)
                             .font(.system(size: 14, weight: .light, design: .rounded))
                             .minimumScaleFactor(0.01)
                         DatePicker("",
-                                   selection: $attendanceData.timeSelector.selectDate,
-                                   in: attendanceData.timeSelector.range,
-                                   displayedComponents: [.date, .hourAndMinute])
+                                   selection: $attendanceData.timeSelector.selectDate)
+//                                   in: attendanceData.timeSelector.range,
+//                                   displayedComponents: [.date, .hourAndMinute])
                             .labelsHidden()
-                            .datePickerStyle(.wheel)
+                            .datePickerStyle(GraphicalDatePickerStyle())
                         Spacer()
                         HStack(alignment: .center, spacing: 10){
                             Button(action: {
@@ -176,7 +175,7 @@ struct HomePage: View {
                                 .font(.system(size: 24, weight: .bold, design: .rounded))
                                 .minimumScaleFactor(0.01)
                                 .frame(width: geometry.size.width*0.6)
-                                .background(Rectangle().cornerRadius(10).foregroundColor(.white))
+                                .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_SaveBtnBg")))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.green, lineWidth: 2)

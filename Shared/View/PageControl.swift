@@ -25,7 +25,7 @@ struct PageControl: View {
                     case Page.ResultPage: ResultPage(currentPage: $currentPage, attendanceData: attendanceData)
                 }
             }
-            // .padding(10)
+//            .padding(10)
             .frame(width: geometry.size.width * 0.99, height: geometry.size.height*0.99)
         }
     }
