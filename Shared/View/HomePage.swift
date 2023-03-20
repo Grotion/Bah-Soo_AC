@@ -10,8 +10,7 @@ import SwiftUI
 struct HomePage: View {
     @Binding var currentPage:Page
     @ObservedObject var attendanceData:AttendanceData
-    @State private var isReset:Bool = false
-    @State private var inputAlert:Bool = false
+    @State private var btnDisable:Bool = false
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -19,7 +18,9 @@ struct HomePage: View {
                     HStack {
                         Spacer()
                         Button(action: {
+                            btnDisable = true
                             currentPage = Page.InstructionPage
+                            btnDisable = false
                         }) {
                             Image(systemName: "info.circle")
                                 .font(.system(size: 30))
@@ -28,6 +29,8 @@ struct HomePage: View {
                                 .scaledToFit()
                         }
                         .padding(5)
+                        .disabled(btnDisable)
+                        .opacity(btnDisable ? 0.3 : 1)
                     }
                     Spacer()
                     Group {
@@ -57,7 +60,8 @@ struct HomePage: View {
                                         confirmationTest: "Are you sure to punch current time ?",
                                         confirmationYesAction: { attendanceData.punchClockIn() },
                                         confirmationNoAction: {attendanceData.punchClockInConfrimation = false},
-                                        selectionDisabled: false
+                                        selectionDisabled: false,
+                                        btnDisable: $btnDisable
                         )
                         Toggle(isOn: $attendanceData.attendance.isKanda) {
                             Label("Go to Kanda?", systemImage: "figure.walk")
@@ -70,6 +74,8 @@ struct HomePage: View {
                         .controlSize(.large)
                         .toggleStyle(.automatic)
                         .frame(maxWidth: geometry.size.width * 0.8)
+                        .disabled(btnDisable)
+                        .opacity(btnDisable ? 0.3 : 1)
                         TimeSelectorRow(geometry: geometry,
                                         timeTitle: "Kanda In",
                                         selectAction: { attendanceData.selectKandaIn() },
@@ -80,7 +86,8 @@ struct HomePage: View {
                                         confirmationTest: "Are you sure to punch current time ?",
                                         confirmationYesAction: { attendanceData.punchKandaIn() },
                                         confirmationNoAction: { attendanceData.punchKandaInConfrimation = false },
-                                        selectionDisabled: !attendanceData.attendance.isKanda
+                                        selectionDisabled: !attendanceData.attendance.isKanda,
+                                        btnDisable: $btnDisable
                         )
                         TimeSelectorRow(geometry: geometry,
                                         timeTitle: "Kanda Out",
@@ -92,15 +99,18 @@ struct HomePage: View {
                                         confirmationTest: "Are you sure to punch current time ?",
                                         confirmationYesAction: { attendanceData.punchKandaOut() },
                                         confirmationNoAction: { attendanceData.punchKandaOutConfrimation = false },
-                                        selectionDisabled: !attendanceData.attendance.isKanda
+                                        selectionDisabled: !attendanceData.attendance.isKanda,
+                                        btnDisable: $btnDisable
                         )
                     }
                     Spacer()
                     Button(action: {
+                        btnDisable = true
                         if(attendanceData.checkTimeValid()) {
                             attendanceData.calculate()
                             currentPage = Page.ResultPage
                         }
+                        btnDisable = false
                     }) {
                         Text("Calculate")
                             .padding()
@@ -109,6 +119,8 @@ struct HomePage: View {
                             .background(Rectangle().cornerRadius(10).foregroundColor(.blue))
                             .minimumScaleFactor(0.01)
                     }
+                    .disabled(btnDisable)
+                    .opacity(btnDisable ? 0.3 : 1)
                     Spacer()
                 }
                 .alert("Warning", isPresented: $attendanceData.isInputAlert, actions: {
@@ -116,91 +128,115 @@ struct HomePage: View {
                 }, message: {
                     Text(attendanceData.alertMsg)
                 })
-                .sheet(isPresented: $attendanceData.timeSelector.showSelectorSheet) {
-                    VStack(alignment: .center, spacing: 20) {
-                        HStack {
-                            Button(action: {
+                VStack {
+                    Spacer()
+                    GrotionCopyright()
+                        .padding(5)
+                }
+            }
+            .sheet(isPresented: $attendanceData.timeSelector.showSelectorSheet) {
+                VStack(alignment: .center, spacing: 20) {
+                    HStack {
+                        Button(action: {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                btnDisable = true
                                 attendanceData.timeSelector.showSelectorSheet = false
-                            }){
-                                Label("Back", systemImage: "chevron.backward")
-                                .foregroundColor(Color.blue)
-                                .font(.system(size: 20, weight: .light, design: .rounded))
+                                btnDisable = false
                             }
-                            .padding(5)
-                            Spacer()
+                        }){
+                            Label("Back", systemImage: "chevron.backward")
+                            .foregroundColor(Color.blue)
+                            .font(.system(size: 20, weight: .light, design: .rounded))
                         }
+                        .padding(5)
+                        .disabled(btnDisable)
+                        .opacity(btnDisable ? 0.3 : 1)
                         Spacer()
-                        Text(attendanceData.timeSelector.description)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size: 14, weight: .light, design: .rounded))
-                            .minimumScaleFactor(0.01)
+                    }
+                    Spacer()
+                    Text(attendanceData.timeSelector.description)
+                        .multilineTextAlignment(.leading)
+                        .font(.system(size: 14, weight: .light, design: .rounded))
+                        .minimumScaleFactor(0.01)
                         DatePicker("",
                                    selection: $attendanceData.timeSelector.selectDate)
 //                                   in: attendanceData.timeSelector.range,
 //                                   displayedComponents: [.date, .hourAndMinute])
                             .labelsHidden()
                             .datePickerStyle(GraphicalDatePickerStyle())
-                        Spacer()
-                        HStack(alignment: .center, spacing: 10){
-                            Button(action: {
-                                attendanceData.timeSelector.getTime()
-                            }){
-                                Text("Now")
-                                    .padding(5)
-                                    .foregroundColor(Color("Color_NowBtnFg"))
-                                    .font(.system(size: 20, weight: .light, design: .rounded))
-                                    .frame(width: geometry.size.width*0.3)
-                                    .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_NowBtnBg")))
-                                    .minimumScaleFactor(0.01)
-                            }
-                            Button(action: {
-                                attendanceData.timeSelector.reset()
-                            }){
-                                Text("Reset")
-                                    .padding(5)
-                                    .foregroundColor(Color.white)
-                                    .font(.system(size: 20, weight: .light, design: .rounded))
-                                    .minimumScaleFactor(0.01)
-                                    .frame(width: geometry.size.width*0.3)
-                                    .background(Rectangle().cornerRadius(10).foregroundColor(.red))
-                            }
-                        }
+                            .disabled(btnDisable)
+                            .opacity(btnDisable ? 0.3 : 1)
+                            .padding()
+                    Spacer()
+                    HStack(alignment: .center, spacing: 10){
                         Button(action: {
-                            attendanceData.timeSelector.saveConfirmation = true
-                            // attendanceData.timeSelector.save()
+                            btnDisable = true
+                            attendanceData.timeSelector.getTime()
+                            btnDisable = false
                         }){
-                            Text("Save")
+                            Text("Now")
                                 .padding(5)
-                                .foregroundColor(Color.green)
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .foregroundColor(Color("Color_NowBtnFg"))
+                                .font(.system(size: 20, weight: .light, design: .rounded))
+                                .frame(width: geometry.size.width*0.3)
+                                .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_NowBtnBg")))
                                 .minimumScaleFactor(0.01)
-                                .frame(width: geometry.size.width*0.6)
-                                .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_SaveBtnBg")))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.green, lineWidth: 2)
-                                )
-                                .confirmationDialog("Are you sure to save selected time ?",
-                                                    isPresented: $attendanceData.timeSelector.saveConfirmation,
-                                                    titleVisibility: .visible) {
-                                    Button("No", role: .cancel) {}
-                                    Button("Yes") {
-                                        attendanceData.timeSelector.save()
-                                        DispatchQueue.main.async {
-                                            attendanceData.timeSelector.showSelectorSheet = false
-                                        }
+                        }
+                        .disabled(btnDisable)
+                        .opacity(btnDisable ? 0.3 : 1)
+                        Button(action: {
+                            btnDisable = true
+                            attendanceData.timeSelector.reset()
+                            btnDisable = false
+                        }){
+                            Text("Reset")
+                                .padding(5)
+                                .foregroundColor(Color.white)
+                                .font(.system(size: 20, weight: .light, design: .rounded))
+                                .minimumScaleFactor(0.01)
+                                .frame(width: geometry.size.width*0.3)
+                                .background(Rectangle().cornerRadius(10).foregroundColor(.red))
+                        }
+                        .disabled(btnDisable)
+                        .opacity(btnDisable ? 0.3 : 1)
+                    }
+                    Button(action: {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            btnDisable = true
+                            // attendanceData.timeSelector.saveConfirmation = true
+                            attendanceData.timeSelector.save()
+                            attendanceData.timeSelector.showSelectorSheet = false
+                            btnDisable = false
+                        }
+                    }){
+                        Text("Save")
+                            .padding(5)
+                            .foregroundColor(Color.green)
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .minimumScaleFactor(0.01)
+                            .frame(width: geometry.size.width*0.6)
+                            .background(Rectangle().cornerRadius(10).foregroundColor(Color("Color_SaveBtnBg")))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.green, lineWidth: 2)
+                            )
+                            .confirmationDialog("Are you sure to save selected time ?",
+                                                isPresented: $attendanceData.timeSelector.saveConfirmation,
+                                                titleVisibility: .visible) {
+                                Button("No", role: .cancel) {}
+                                Button("Yes") {
+                                    attendanceData.timeSelector.save()
+                                    DispatchQueue.main.async {
+                                        attendanceData.timeSelector.showSelectorSheet = false
                                     }
                                 }
-                        }
-                        Spacer()
+                            }
                     }
-                    .padding(10)
-                }
-                VStack {
+                    .disabled(btnDisable)
+                    .opacity(btnDisable ? 0.3 : 1)
                     Spacer()
-                    GrotionCopyright()
-                        .padding(5)
                 }
+                .padding(10)
             }
         }
     }
@@ -213,65 +249,3 @@ struct HomePage_Previews: PreviewProvider {
     }
 }
 
-struct TimeSelectorRow: View {
-    var geometry: GeometryProxy
-    var timeTitle: String
-    var selectAction: () -> Void
-    var displayTime: Date
-    var formatter: DateFormatter
-    @Binding var showConfirmation: Bool
-    var confirmationDisplay: () -> Void
-    var confirmationTest: String
-    var confirmationYesAction: () -> Void
-    var confirmationNoAction: () -> Void
-    var selectionDisabled: Bool
-    var body: some View {
-        
-        HStack(alignment: .center, spacing: 5) {
-            Text(timeTitle)
-                .lineLimit(1)
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .frame(maxWidth: geometry.size.width * 0.25)
-                .minimumScaleFactor(0.01)
-            Button(action: {
-                selectAction()
-            }){
-                Text(displayTime, formatter: formatter)
-                    .lineLimit(1)
-                    .padding(5)
-                    .foregroundColor(Color(red: 0/255, green: 0/255, blue: 139/255))
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .minimumScaleFactor(0.01)
-            }
-            .disabled(selectionDisabled)
-            .frame(maxWidth: geometry.size.width * 0.45)
-            .background(Rectangle().cornerRadius(10).foregroundColor(Color(red: 220/255, green: 220/255, blue: 220/255)))
-            .opacity(selectionDisabled ? 0.3 : 1)
-            Button(action: {
-                confirmationDisplay()
-            }) {
-                Text("Punch 🕰")
-                    .lineLimit(1)
-                    .padding(5)
-                    .foregroundColor(Color(red: 139/255, green: 0/255, blue: 0/255))
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .minimumScaleFactor(0.01)
-            }
-            .disabled(selectionDisabled)
-            .frame(maxWidth: geometry.size.width * 0.25)
-            .background(Rectangle().cornerRadius(10).foregroundColor(Color(red: 220/255, green: 220/255, blue: 220/255)))
-            .opacity(selectionDisabled ? 0.3 : 1)
-            .confirmationDialog("Are you sure to punch current time ?",
-                                isPresented: $showConfirmation,
-                                titleVisibility: .visible) {
-                Button("No", role: .cancel) {
-                    confirmationNoAction()
-                }
-                Button("Yes") {
-                    confirmationYesAction()
-                }
-                
-            }
-        }
-    }
-}
